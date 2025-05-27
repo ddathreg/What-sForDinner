@@ -1,100 +1,65 @@
 import React, { useState, useEffect } from "react";
 import RestaurantList from "../components/RestaurantList";
+import FunnyAd from "../components/FunnyAd";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
-  const [referenceFavorite, setReferenceFavorite] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchFavorites = async (token) => {
-    const response = await fetch("http://localhost:8000/users/favorites", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (response.status === 401) throw new Error("Unauthorized");
-    const data = await response.json();
-    setFavorites(data || []);
-  };
+  const fetchFavorites = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
-  // Fetch user location to use for recommendations
-  const fetchLocation = async (token) => {
-    const response = await fetch("http://localhost:8000/users/location", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (response.status === 401) throw new Error("Unauthorized");
-    const data = await response.json();
-    return data.location || "slo"; // fallback location
-  };
-
-  // Fetch recommendations based on location
-  const fetchRecommendations = async (token, location) => {
-    const response = await fetch(
-      `http://localhost:8000/users/recommendations/${location}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
-    if (response.status === 401) throw new Error("Unauthorized");
-    const data = await response.json();
-    const ref = data.reference_favorite || null;
-    const filteredRecommendations = (data.recommendations || []).filter(
-      (rec) => !ref || rec.name !== ref.name,
-    );
-    setRecommendations(filteredRecommendations);
-    setReferenceFavorite(ref);
-  };
-
-  const fetchData = async () => {
     try {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
+      const response = await fetch("http://localhost:8000/users/favorites", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      setIsSignedIn(true);
-      await fetchFavorites(token);
-      const location = await fetchLocation(token);
-      await fetchRecommendations(token, location);
+      if (!response.ok) throw new Error("Failed to fetch favorites");
+
+      const data = await response.json();
+      setFavorites(data || []);
     } catch (error) {
-      console.error(error);
-      setIsSignedIn(false);
+      console.error("Error fetching favorites:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch on mount and when favorites change
   useEffect(() => {
-    fetchData();
+    fetchFavorites();
   }, []);
 
   if (loading) {
-    return <div style={{ color: "white" }}>Loading favorites...</div>;
+    return <div style={{ color: "white", textAlign: "center", marginTop: "20px" }}>Loading favorites...</div>;
   }
 
   if (!localStorage.getItem("authToken")) {
     return (
       <div style={{ textAlign: "center", marginTop: "20%", color: "white" }}>
-        <h1>Please sign in to visit favorites & recommendations </h1>
+        <h1>Please sign in to view favorites</h1>
       </div>
     );
   }
 
   return (
-    <div style={{ color: "white" }}>
-      <h1>Your Favorite Restaurants</h1>
+    <div style={{ padding: "20px", color: "white" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Your Favorite Restaurants</h1>
       {favorites.length > 0 ? (
-        <RestaurantList restaurants={favorites} />
+        <RestaurantList
+          restaurants={favorites}
+          onFavoriteToggle={fetchFavorites} // Add this to refresh after toggling
+        />
       ) : (
-        <p>No favorite restaurants found.</p>
+        <p style={{ textAlign: "center" }}>No favorites yet. Start adding some!</p>
       )}
-      <h1>Recommended</h1>
-      <h2>Becasue you liked {referenceFavorite.name} </h2>
-      {recommendations.length > 0 ? (
-        <RestaurantList restaurants={recommendations} />
-      ) : (
-        <p>No recommendations available.</p>
-      )}
+      <FunnyAd />
     </div>
   );
 };

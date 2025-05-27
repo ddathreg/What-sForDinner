@@ -165,27 +165,27 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
 
 //list all restaurant using RestaurantCard component
 
-const RestaurantList = ({ restaurants }) => {
+const RestaurantList = ({ restaurants, onFavoriteToggle }) => {
   const [favorites, setFavorites] = useState([]);
 
-  // Fetch user's favorites when component mounts
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      const token = localStorage.getItem("authToken");
-      if (!token) return; // Don't fetch for guests
+  const fetchFavorites = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
 
-      try {
-        const res = await fetch("http://localhost:8000/users/favorites", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-        setFavorites(data || []);
-      } catch (error) {
-        console.error("Error fetching favorites:", error);
-      }
-    };
+    try {
+      const res = await fetch("http://localhost:8000/users/favorites", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      setFavorites(data || []);
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchFavorites();
   }, []);
 
@@ -205,8 +205,11 @@ const RestaurantList = ({ restaurants }) => {
         },
         body: JSON.stringify({ restaurant }),
       });
-      const data = await res.json();
-      setFavorites(data.favorites || []);
+      if (res.ok) {
+        // Refresh favorites locally and notify parent
+        await fetchFavorites();
+        if (onFavoriteToggle) onFavoriteToggle();
+      }
     } catch (error) {
       console.error("Error updating favorites:", error);
     }
@@ -216,7 +219,7 @@ const RestaurantList = ({ restaurants }) => {
     <Box className="restaurant-list">
       {restaurants.map((restaurant) => (
         <RestaurantCard
-          key={restaurant._id}
+          key={restaurant._id || restaurant.name}
           restaurant={restaurant}
           userFavorites={favorites}
           onToggleFavorite={toggleFavorite}
