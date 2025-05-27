@@ -9,7 +9,7 @@ const CustomWheel = ({ mustSpin, prizeNumber, onStopSpinning, data }) => (
     backgroundColors={["#3e3e3e", "#df3428"]}
     textColors={["#ffffff"]}
     onStopSpinning={onStopSpinning}
-    spinDuration={.5}
+    spinDuration={.35}
   />
 );
 

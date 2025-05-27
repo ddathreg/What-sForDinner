@@ -17,6 +17,16 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
       className="restaurant-card"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      sx={{
+        position: "relative",
+        width: "300px",
+        margin: "1rem",
+        overflow: "hidden",
+        transition: "transform 0.3s",
+        "&:hover": {
+          transform: "scale(1.03)",
+        },
+      }}
     >
       {(hover || isFavorited) && // Show star if hovered or favorited
         (isFavorited ? (
@@ -27,6 +37,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
               right: 8,
               cursor: "pointer",
               color: "gold",
+              zIndex: 2,
             }}
             onClick={() => onToggleFavorite(restaurant)}
           />
@@ -37,32 +48,57 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
               top: 8,
               right: 8,
               cursor: "pointer",
-              color: "primary",
+              color: "white",
+              zIndex: 2,
               "&:hover": { color: "gold" },
             }}
             onClick={() => onToggleFavorite(restaurant)}
           />
         ))}
+
       <CardHeader title={restaurant.name} />
-      <CardContent>
-        <p className="restaurant-image">
-          {restaurant.featured_image ? (
-            <img
-              src={restaurant.featured_image}
-              alt={`${restaurant.name} image`}
-              style={{
-                width: "100%",
-                maxWidth: "500px",
-                height: "auto",
-              }}
-            />
-          ) : (
-            "No image available"
-          )}
-        </p>
-        <p className="restaurant-link">
+
+      <div className="restaurant-image">
+        {restaurant.featured_image ? (
+          <img
+            src={restaurant.featured_image}
+            alt={`${restaurant.name} image`}
+            style={{ width: "100%", height: "auto", display: "block" }}
+          />
+        ) : (
+          <div style={{ color: "gray", textAlign: "center", padding: "1rem" }}>
+            No image available
+          </div>
+        )}
+      </div>
+
+      {/* Hover details */}
+      <CardContent
+        className="hover-details"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          height: "100%",
+          width: "100%",
+          backgroundColor: "rgba(0,0,0,0.85)",
+          color: "white",
+          opacity: hover ? 1 : 0,
+          pointerEvents: hover ? "auto" : "none",
+          transition: "opacity 0.3s ease",
+          padding: "1rem",
+          overflowY: "auto",
+        }}
+      >
+        <p>
+          <strong>Website: </strong>
           {restaurant.link ? (
-            <a href={restaurant.link} target="_blank" rel="noopener noreferrer">
+            <a
+              href={restaurant.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#4dabf7" }}
+            >
               Visit Website
             </a>
           ) : (
@@ -70,49 +106,62 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
           )}
         </p>
         <p>
-          Cuisines:{" "}
+          <strong>Cuisines: </strong>
           {restaurant.cuisines.length > 0
             ? restaurant.cuisines.join(", ")
             : "NA"}
         </p>
-        <p>Price Range: {restaurant.price_range_usd || "NA"}</p>
-        <p>Average Rating: {restaurant.rating || "NA"}</p>
-        <p>Reviews: {restaurant.reviews || "NA"}</p>
-        <p>Has Delivery: {restaurant.has_delivery ? "Yes" : "No"}</p>
-
-        {/* Menu Link */}
         <p>
+          <strong>Price Range: </strong>
+          {restaurant.price_range_usd || "NA"}
+        </p>
+        <p>
+          <strong>Average Rating: </strong>
+          {restaurant.rating || "NA"}
+        </p>
+        <p>
+          <strong>Reviews: </strong>
+          {restaurant.reviews || "NA"}
+        </p>
+        <p>
+          <strong>Has Delivery: </strong>
+          {restaurant.has_delivery ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Menu: </strong>
           {restaurant.menu_link ? (
             <a
               href={restaurant.menu_link}
               target="_blank"
               rel="noopener noreferrer"
+              style={{ color: "#4dabf7" }}
             >
               View Menu
             </a>
           ) : (
-            "Menu Not Available"
+            "Not Available"
           )}
         </p>
-
-        {/* Reservation Link */}
-        <p className="restaurant-link">
+        <p>
+          <strong>Reservation: </strong>
           {restaurant.reservation_link ? (
             <a
               href={restaurant.reservation_link}
               target="_blank"
               rel="noopener noreferrer"
+              style={{ color: "#4dabf7" }}
             >
               Make a Reservation
             </a>
           ) : (
-            "Reservation Not Available"
+            "Not Available"
           )}
         </p>
       </CardContent>
     </Card>
   );
 };
+
 
 //list all restaurant using RestaurantCard component
 

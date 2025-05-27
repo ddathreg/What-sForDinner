@@ -146,15 +146,6 @@ const SearchFilter = ({ filters, setFilters, city }) => {
       <TypeDropdown filters={filters} setFilters={setFilters} city={city} />
       <PriceDropdown filters={filters} setFilters={setFilters} />
       <Button
-        variant="outlined"
-        sx={{
-          color: "white",
-          borderColor: "white",
-          "&:hover": {
-            backgroundColor: "#444444",
-            borderColor: "white",
-          },
-        }}
         onClick={() => setFilters(defaultFilters)}
       >
         Reset

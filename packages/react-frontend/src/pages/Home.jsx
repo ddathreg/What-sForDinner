@@ -128,65 +128,71 @@ const Home = () => {
     setOpen(false);
   };
 
-  return (
-    <div className="home-container">
-      <h1>What's For Dinner?</h1>
-      <div className="filters-display">
-        <p>
-          <strong>City:</strong> {city || "Loading city..."}
-        </p>
-        <p>
-          <strong>Search Query:</strong> {filters.searchQuery || "None"}
-        </p>
-        <p>
-          <strong>Type:</strong> {filters.type || "Any"}
-        </p>
-        <p>
-          <strong>Price:</strong> {filters.price || "Any"}
-        </p>
-        <p>
-          <strong>Minimum Rating:</strong> {filters.min_rating || "Any"}
-        </p>
-      </div>
-      {restaurants.length > 0 ? (
-        <>
-          <CustomWheel
-            mustSpin={mustSpin}
-            prizeNumber={prizeNumber}
-            onStopSpinning={handleStopSpinning}
-            data={restaurants.map((r, index) => ({
-              option: "",
-              style: {
-                backgroundColor: [
-                  "red",
-                  "blue",
-                  "green",
-                  "yellow",
-                  "purple",
-                  "orange",
-                  "pink",
-                  "brown",
-                ][index % 8],
-              },
-            }))}
-          />
-          <button className="spin-button" onClick={handleSpinClick}>
-            Spin the Wheel!
-          </button>
-        </>
-      ) : (
-        <p>Loading restaurants or no restaurants found...</p>
-      )}
-      {selectedItem && <p>Selected Restaurant: {selectedItem.name}</p>}
+  const handleReopenModal = () => {
+    setOpen(true); // Reopen the modal with the selected restaurant
+  };
 
+  return (
+    <div className="home-page">
+      <h1 className="page-title">What's For Dinner?</h1>
+      <div className="home-container">
+        <div className="filters-container">
+          <div className="filters-display">
+            <p><strong>City:</strong> {city || "Loading city..."}</p>
+            <p><strong>Search Query:</strong> {filters.searchQuery || "None"}</p>
+            <p><strong>Type:</strong> {filters.type || "Any"}</p>
+            <p><strong>Price:</strong> {filters.price || "Any"}</p>
+            <p><strong>Minimum Rating:</strong> {filters.min_rating || "Any"}</p>
+          </div>
+        </div>
+  
+        {restaurants.length > 0 ? (
+          <>
+            <div className="wheel-container">
+              <CustomWheel
+                mustSpin={mustSpin}
+                prizeNumber={prizeNumber}
+                onStopSpinning={handleStopSpinning}
+                data={restaurants.map((r, index) => ({
+                  option: "",
+                  style: {
+                    backgroundColor: [
+                      "red", "blue", "green", "yellow",
+                      "purple", "orange", "pink", "brown"
+                    ][index % 8],
+                  },
+                }))}
+              />
+            </div>
+            <div className="reopen-container">
+              {selectedItem ? (
+                <button className="reopen-button" onClick={handleReopenModal}>
+                  Reopen Pick
+                </button>
+              ) : (
+                <span style={{ visibility: "hidden" }}>placeholder</span>
+              )}
+            </div>
+          </>
+        ) : (
+          <p>Loading restaurants or no restaurants found...</p>
+        )}
+      </div>
+  
+      {selectedItem && <p className="result-text">Selected Restaurant: {selectedItem.name}</p>}
+  
       <RestaurantModal
         open={open}
         handleClose={handleClose}
         selectedItem={selectedItem}
       />
+      <button className="spin-button" onClick={handleSpinClick}>
+        Spin the Wheel
+      </button>
       <FunnyAd />
     </div>
   );
+  
 };
 
 export default Home;

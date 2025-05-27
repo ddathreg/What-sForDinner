@@ -1,10 +1,9 @@
 .navbar {
     background-color: #333333 !important;
-    border-bottom: 2px solid white;
     position: fixed;
     width: 100%;
     top: 0;
-    z-index: 1100;
+    /* z-index: 1100; */
   }
   
   .navbar-toolbar {
@@ -27,6 +26,11 @@
     text-transform: none;
     font-weight: 500;
     font-size: 1rem;
+  }
+
+  .navbar-button:hover {
+    color: var(--hover) !important;
+    background-color: #333333 !important;
   }
   
   .navbar-profile {

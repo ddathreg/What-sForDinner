@@ -1,39 +1,119 @@
 /* home.css */
 
+/* home.css */
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5rem;
+  min-height: 50vh;
+}
+
+.page-title {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
 
 .home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0rem;
-    font-family: Tahoma, Verdana, sans-serif;
-  }
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;  /* <-- Add this line to center vertically */
+  margin-right: 2rem;
+  color: white;
+}
+
+.filters-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.filters-display p {
+  margin: 5px 0;
+  font-size: 1rem;
+}
+
+.wheel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spin-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  /* margin-top: .5rem; */
+}
   
+  /* .spin-button:hover {
+    background-color: #f7ea75;
+  } */
+
   h1 {
     font-size: 3rem;
-    margin-bottom: 1.5rem;
+    margin-top: 0rem;
+    margin-bottom: 1rem;
     color: #ffffff;
   }
   
+  .result-text {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .filters-display {
+    display: flex;
+    justify-content: space-around; 
+    margin-bottom: 20px;
+    flex-wrap: wrap; 
+  }
   
-  .spin-button {
+  .filters-display p {
+    margin: 0 10px;
+    color: white;
+    font-size: 1rem;
+  }
+
+  .reopen-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-width: 175px; /* enough width to match button size */
+    height: 100%; /* stretch vertically with wheel */
+    /* background-color: black; */
+    margin-left: 2rem;
+  }
+  
+
+  .reopen-button {
     padding: 0.75rem 1.5rem;
     font-size: 1.1rem;
     color: white;
     border: none;
     border-radius: 12px;
     cursor: pointer;
+    margin-top: 10px;
     transition: background-color 0.3s ease;
+    margin-left: 2rem;
+
   }
   
-  /* .spin-button:hover {
-    background-color: #f7ea75;
-  } */
   
-  .result-text {
-    margin-top: 1.5rem;
-    font-size: 1.25rem;
-    color: #007bff;
-  }
   
