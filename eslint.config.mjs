@@ -29,6 +29,17 @@ export default [
     rules: {
       "react/prop-types": 0,
       "react/react-in-jsx-scope": "off",
+      "no-unused-vars": "off",
+      "no-undef": "off",
+      "prettier/prettier": 0,
+    },
+    languageOptions: {
+      globals: {
+        adm: true,
+        process: true,
+        console: true,
+        require: true
+      }
     },
     settings: {
       react: {

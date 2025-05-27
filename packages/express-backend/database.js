@@ -15,14 +15,11 @@ const connectDB = async () => {
       //console.log(mongoose.connection.readyState);
       console.log("DB connected");
       console.log(mongoose.connection.db.databaseName);
-    } 
-    catch (error) {
+    } catch (error) {
       console.error("Error connecting DB", error);
     }
     return connection;
   }
 };
-
-
 
 export default connectDB;

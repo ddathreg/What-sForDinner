@@ -4,6 +4,10 @@ what is for dinner
 
 Will Aiden Kyle Dane Nathan
 
+# Deployed URL
+
+https://ambitious-tree-0c41c301e.6.azurestaticapps.net
+
 # Technical Specification
 
 https://docs.google.com/document/d/100uOvXXVBDtUlq21Loc0mE9Szhwt9eZojN7OJvCMnuU/edit?tab=t.0
@@ -44,7 +48,7 @@ npm run format - format to prettier settings
 
 # Unit Test Coverage Report
 
-Ran 3/14 10:12 AM
+Ran 5/14 10:12 PM
 
 > express-backend@1.0.0 test
 > jest --verbose

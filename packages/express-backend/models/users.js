@@ -51,3 +51,4 @@ UserSchema.index({ name: 1 }, { unique: true });
 const Users = mongoose.model("User", UserSchema);
 
 export default Users;
+// module.exports = Users;
