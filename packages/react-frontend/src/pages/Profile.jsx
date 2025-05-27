@@ -5,6 +5,7 @@ import LocationPicker from "../components/LocationPicker";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({
@@ -126,7 +127,10 @@ const Profile = () => {
               <strong>Phone:</strong>{" "}
               {user.phone || "No phone number available"}
             </p>
-            <LocationPicker token={localStorage.getItem("authToken")} />
+            <LocationPicker
+              token={localStorage.getItem("authToken")}
+              onLocationChange={setLocation}
+            />
             <Button
               variant="contained"
               onClick={() => setIsEditing(true)}

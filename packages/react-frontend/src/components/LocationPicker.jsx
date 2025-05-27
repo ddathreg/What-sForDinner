@@ -10,10 +10,10 @@ const LocationPicker = ({ token, onLocationChange }) => {
     "San Francisco": "sf",
     "Los Angeles": "la",
     "New York City": "nyc",
-    Chicago: "chi",
-    Miami: "mia",
-    Austin: "atx",
-    Honolulu: "hnl",
+    "Chicago": "chi",
+    "Miami": "mia",
+    "Austin": "atx",
+    "Honolulu": "hnl",
     "New Orleans": "nola",
   };
 
