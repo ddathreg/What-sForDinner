@@ -4,12 +4,17 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authenticateToken from "./authMiddleware.js";
 import { Restaurant } from "../models/restaurant.js";
+import { spawn } from "child_process";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const router = express.Router();
 router.use(express.json());
 
 function generateAccessToken(username) {
-  return jwt.sign({ username }, process.env.TOKEN_SECRET, { expiresIn: "600s" });
+  return jwt.sign({ username }, process.env.TOKEN_SECRET, {
+    expiresIn: "600s",
+  });
 }
 
 // Route to get user by ID
@@ -60,13 +65,17 @@ router.post("/login", async (req, res) => {
     if (user.name && user.passwd) {
       const isValid = await bcrypt.compare(String(passwd), String(user.passwd));
       if (isValid) {
-        const token = jwt.sign({ username: user.name }, process.env.TOKEN_SECRET, {
-          expiresIn: "600s",
-        });
+        const token = jwt.sign(
+          { username: user.name },
+          process.env.TOKEN_SECRET,
+          {
+            expiresIn: "600s",
+          },
+        );
         return res.status(200).send(token);
       }
     }
-    
+
     return res.status(401).send("Invalid credentials");
   } catch (error) {
     console.error("Login error:", error);
@@ -122,12 +131,14 @@ router.get("/guest/location", (req, res) => {
 
 // Public endpoint for guest filters (returns empty/default filters)
 router.get("/guest/filters", (req, res) => {
-  res.json({ filters: {
-    searchQuery: "",
-    type: "",
-    price: "",
-    min_rating: "",
-  }});
+  res.json({
+    filters: {
+      searchQuery: "",
+      type: "",
+      price: "",
+      min_rating: "",
+    },
+  });
 });
 
 // Route to update user details (bio, email, phone, profilePic)
@@ -319,6 +330,49 @@ router.patch("/location", authenticateToken, async (req, res) => {
     console.error("Error updating location:", err);
     res.status(500).send("Server error");
   }
+});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+router.get("/recommendations/:location", authenticateToken, (req, res) => {
+  const location = req.params.location || "slo";
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Token not provided" });
+  }
+
+  const scriptPath = path.join(__dirname, "../recommender.py");
+  const python = spawn("python", [scriptPath, location, token], {
+    cwd: path.dirname(scriptPath),
+  });
+
+  let result = "";
+  let errorOutput = "";
+
+  python.stdout.on("data", (data) => {
+    result += data.toString();
+  });
+
+  python.stderr.on("data", (data) => {
+    errorOutput += data.toString();
+  });
+
+  python.on("close", (code) => {
+    if (code !== 0) {
+      return res
+        .status(500)
+        .json({ error: "Python script error", details: errorOutput });
+    }
+
+    try {
+      const parsed = JSON.parse(result);
+      res.json(parsed);
+    } catch (err) {
+      res.status(500).json({ error: "Failed to parse Python output", result });
+    }
+  });
 });
 
 export default router;
