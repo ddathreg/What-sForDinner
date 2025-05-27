@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "dev": "npx nodemon backend.js",
+    "lint": "npx eslint .",
     "start": "node backend.js"
   },
   "author": "",

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "what is for dinner",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "jest --coverage",
-    "lint": "eslint .",
+    "lint": "npx eslint .",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "author": "",
@@ -19,8 +20,10 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@babel/preset-env": "^7.27.2",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.20.0",
+    "babel-jest": "^29.7.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",

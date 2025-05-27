@@ -99,6 +99,6 @@ app.get("/", (req, res) => {
 app.use("/restaurants", restaurantRoutes);
 app.use("/users", userRoutes);
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+app.listen(process.env.PORT || port, () => {
+  console.log("REST API is listening.");
 });
