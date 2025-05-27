@@ -119,30 +119,40 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
 const RestaurantList = ({ restaurants }) => {
   const [favorites, setFavorites] = useState([]);
 
+  // Fetch user's favorites when component mounts
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchFavorites = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) return; // Don't fetch for guests
+
       try {
-        const res = await fetch("http://localhost:8000/users/details", {
+        const res = await fetch("http://localhost:8000/users/favorites", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         const data = await res.json();
-        setFavorites(data.favorites || []);
+        setFavorites(data || []);
       } catch (error) {
-        console.log("Error fetching user details:", error);
+        console.error("Error fetching favorites:", error);
       }
     };
-    fetchUserDetails();
+    fetchFavorites();
   }, []);
 
   const toggleFavorite = async (restaurant) => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      alert("Please sign in to save favorites");
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:8000/users/favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ restaurant }),
       });
