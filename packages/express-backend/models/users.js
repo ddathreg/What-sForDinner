@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-// import mongoose from "mongoose";
+// const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -27,5 +27,5 @@ UserSchema.index({ name: 1 }, { unique: true });
 
 const Users = mongoose.model("User", UserSchema);
 
-// export default Users;
-module.exports = Users;
+export default Users;
+// module.exports = Users;
