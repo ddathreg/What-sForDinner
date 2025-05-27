@@ -32,7 +32,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:8000/users/visited", {
+      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -338,7 +338,7 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/users/visited", {
+      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -563,7 +563,7 @@ const RestaurantList = ({ restaurants, onFavoriteToggle, onVisitStatusChange }) 
     if (!token) return;
 
     try {
-      const res = await fetch("http://localhost:8000/users/favorites", {
+      const res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -583,7 +583,7 @@ const RestaurantList = ({ restaurants, onFavoriteToggle, onVisitStatusChange }) 
     }
 
     try {
-      const response = await fetch("http://localhost:8000/users/favorites", {
+      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

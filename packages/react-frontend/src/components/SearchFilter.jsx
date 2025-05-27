@@ -62,7 +62,7 @@ const TypeDropdown = ({ filters, setFilters, city }) => {
     const fetchRestaurantTypes = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/restaurants/${city.toLowerCase()}`,
+          `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/restaurants/${city.toLowerCase()}`,
         );
         const data = await response.json();
 

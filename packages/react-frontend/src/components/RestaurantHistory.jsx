@@ -29,7 +29,7 @@ const RestaurantHistory = () => {
 
   const fetchVisited = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:8000/users/visited', {
+      const response = await fetch('https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
@@ -83,7 +83,7 @@ const RestaurantHistory = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/users/visited', {
+      const response = await fetch('https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited', {
         method: isEditing ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
