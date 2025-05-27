@@ -14,7 +14,7 @@ const Favorites = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/users/favorites", {
+      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -25,7 +25,7 @@ function App() {
       if (token) {
         try {
           // const response = await fetch("http://localhost:8000/users/verify", {
-          const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/", {
+          const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/verify", {
             headers: {
               Authorization: `Bearer ${token}`,
             },

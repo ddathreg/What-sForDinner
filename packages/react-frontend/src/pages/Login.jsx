@@ -39,7 +39,7 @@ const Login = ({ setIsAuthenticated }) => {
 
     try {
       const endpoint = isSignUp ? "signup" : "login";
-      const response = await fetch(`http://localhost:8000/users/${endpoint}`, {
+      const response = await fetch(`https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -22,7 +22,7 @@ const Home = () => {
   const fetchLocation = async () => {
     try {
       if (localStorage.getItem("authToken")) {
-        const res = await fetch("http://localhost:8000/users/location", {
+        const res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
@@ -45,14 +45,14 @@ const Home = () => {
     try {
       let res;
       if (localStorage.getItem("authToken")) {
-        res = await fetch("http://localhost:8000/users/filters", {
+        res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/filters", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
       } else {
         // Use guest endpoint if not authenticated
-        res = await fetch("http://localhost:8000/users/guest/filters");
+        res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/guest/filters");
       }
       const data = await res.json();
       setFilters(data.filters);
@@ -78,7 +78,7 @@ const Home = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:8000/restaurants/${city}?${queryParams}`,
+        `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/restaurants/${city}?${queryParams}`,
       );
       const data = await res.json();
 
