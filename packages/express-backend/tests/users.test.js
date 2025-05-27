@@ -24,6 +24,7 @@ describe("User Model Tests", () => {
   it("should create and save a user successfully", async () => {
     const exampleUser = {
       name: "Will Kim",
+      passwd: "iamWillKimm12!@",
       email: "will@example.com",
       bio: "Software Engineer",
       phone: "123-456-7890",
@@ -62,7 +63,7 @@ describe("User Model Tests", () => {
   });
 
   it("should find a user by email", async () => {
-    const userData = { name: "Jane", email: "jane@example.com" };
+    const userData = { name: "Jane", email: "jane@example.com", passwd: "Janepassword1!"};
     await Users.create(userData);
 
     const user = await Users.findOne({ email: userData.email });
