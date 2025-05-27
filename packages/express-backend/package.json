@@ -4,10 +4,14 @@
   "main": "backend.js",
   "type": "module",
   "scripts": {
-    "test": "jest",
+    "newtest": "jest",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "dev": "npx nodemon backend.js",
     "lint": "npx eslint .",
     "start": "node backend.js"
+  },
+  "jest": {
+    "transform": {}
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +20,8 @@
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "cross": "^1.0.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
