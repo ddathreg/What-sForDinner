@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import RestaurantList from "../components/RestaurantList";
 import SearchFilter from "../components/SearchFilter";
 import FunnyAd from "../components/FunnyAd";
@@ -121,6 +121,15 @@ const Restaurants = () => {
     }
   }, [filters]);
 
+  const handleVisitStatusChange = useCallback(() => {
+    // Refresh restaurants data to reflect new visit status
+    if (city && filtersLoaded) {
+      fetchRestaurants(city)
+        .then((data) => setRestaurants(data))
+        .catch((error) => console.error(error));
+    }
+  }, [city, filtersLoaded]);
+
   return (
     <div className="restaurants-page">
       <h1>Restaurants</h1>
@@ -128,8 +137,15 @@ const Restaurants = () => {
         token={localStorage.getItem("authToken")}
         onLocationChange={setCity}
       />
-      <SearchFilter filters={filters} setFilters={setFilters} city={city} />
-      <RestaurantList restaurants={restaurants} />
+      <SearchFilter filters={filters} setFilters={setFilters} />
+      {restaurants.length > 0 ? (
+        <RestaurantList
+          restaurants={restaurants}
+          onVisitStatusChange={handleVisitStatusChange}
+        />
+      ) : (
+        <p>No restaurants found</p>
+      )}
       <FunnyAd />
     </div>
   );

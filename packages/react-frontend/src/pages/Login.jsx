@@ -13,9 +13,9 @@ import "../CSS/Login.css"; // <-- Import the new CSS file
 
 // Password must be at least 8 characters, include uppercase, lowercase, number, and special char
 const validatePassword = (password) => {
-    const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(password);
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
 };
 
 const Login = ({ setIsAuthenticated }) => {
@@ -26,32 +26,29 @@ const Login = ({ setIsAuthenticated }) => {
     const [showSuccess, setShowSuccess] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrorMessage("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
 
-        if (isSignUp && !validatePassword(password)) {
-            setErrorMessage(
-                "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character."
-            );
-            return;
-        }
+    if (isSignUp && !validatePassword(password)) {
+      setErrorMessage(
+        "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character."
+      );
+      return;
+    }
 
-        try {
-            const endpoint = isSignUp ? "signup" : "login";
-            const response = await fetch(`http://localhost:8000/users/${endpoint}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username: username,
-                    passwd: password,
-                }),
-            });
-
-            // Debugging
-            console.log("Response status:", response.status);
+    try {
+      const endpoint = isSignUp ? "signup" : "login";
+      const response = await fetch(`http://localhost:8000/users/${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          passwd: password,
+        }),
+      });
 
             // Add debugging
             console.log("Response status:", response.status);

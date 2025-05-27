@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 import FunnyAd from "../components/FunnyAd";
 import LocationPicker from "../components/LocationPicker";
-import "../CSS/profile.css";
+import RestaurantHistory from "../components/RestaurantHistory";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -224,6 +224,7 @@ const Profile = () => {
         </Alert>
       </Snackbar>
       <FunnyAd />
+      <RestaurantHistory />
     </div>
   );
 };

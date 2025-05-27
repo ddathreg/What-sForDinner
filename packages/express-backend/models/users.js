@@ -1,4 +1,3 @@
-// const mongoose = require("mongoose");
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
@@ -7,7 +6,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   displayName: String,
-  passwd: String,
+  passwd: {
+    type: String,
+    required: true,
+  },
   bio: String,
   email: String,
   phone: String,
@@ -21,6 +23,27 @@ const UserSchema = new mongoose.Schema({
     price: { type: String, default: "" },
     min_rating: { type: Number, default: 0 },
   },
+  visitedRestaurants: [
+    {
+      restaurantId: String,
+      name: String,
+      rating: {
+        type: Number,
+        min: 1,
+        max: 5,
+        required: true,
+      },
+      review: {
+        type: String,
+        maxLength: 300,
+      },
+      images: [String], // Add this field for storing image URLs
+      visitDate: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 UserSchema.index({ name: 1 }, { unique: true });

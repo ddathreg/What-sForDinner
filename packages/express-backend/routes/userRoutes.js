@@ -4,12 +4,17 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authenticateToken from "./authMiddleware.js";
 import { Restaurant } from "../models/restaurant.js";
+import { spawn } from "child_process";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const router = express.Router();
 router.use(express.json());
 
 function generateAccessToken(username) {
-  return jwt.sign({ username }, process.env.TOKEN_SECRET, { expiresIn: "600s" });
+  return jwt.sign({ username }, process.env.TOKEN_SECRET, {
+    expiresIn: "600s",
+  });
 }
 
 // Route to get user by ID
@@ -60,13 +65,17 @@ router.post("/login", async (req, res) => {
     if (user.name && user.passwd) {
       const isValid = await bcrypt.compare(String(passwd), String(user.passwd));
       if (isValid) {
-        const token = jwt.sign({ username: user.name }, process.env.TOKEN_SECRET, {
-          expiresIn: "600s",
-        });
+        const token = jwt.sign(
+          { username: user.name },
+          process.env.TOKEN_SECRET,
+          {
+            expiresIn: "600s",
+          },
+        );
         return res.status(200).send(token);
       }
     }
-    
+
     return res.status(401).send("Invalid credentials");
   } catch (error) {
     console.error("Login error:", error);
@@ -122,12 +131,14 @@ router.get("/guest/location", (req, res) => {
 
 // Public endpoint for guest filters (returns empty/default filters)
 router.get("/guest/filters", (req, res) => {
-  res.json({ filters: {
-    searchQuery: "",
-    type: "",
-    price: "",
-    min_rating: "",
-  }});
+  res.json({
+    filters: {
+      searchQuery: "",
+      type: "",
+      price: "",
+      min_rating: "",
+    },
+  });
 });
 
 // Route to update user details (bio, email, phone, profilePic)
@@ -209,24 +220,26 @@ router.post("/favorites", authenticateToken, async (req, res) => {
     const username = req.user.username;
     const restaurant = req.body.restaurant;
 
-    const user = await Users.findOne({ name: username });
+    if (!restaurant) {
+      return res.status(400).json({ message: "Restaurant data is required." });
+    }
 
+    const user = await Users.findOne({ name: username });
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
     const existingFavorite = user.favorites.find(
-      (fav) => fav.name === restaurant.name,
+      (fav) => fav.name === restaurant.name
     );
 
     if (!existingFavorite) {
-      if (!restaurant) {
-        return res.status(404).json({ message: "Restaurant not found." });
-      }
+      // Add to favorites
       user.favorites.push(restaurant);
     } else {
+      // Remove from favorites
       user.favorites = user.favorites.filter(
-        (fav) => fav.name !== restaurant.name,
+        (fav) => fav.name !== restaurant.name
       );
     }
 
@@ -318,6 +331,156 @@ router.patch("/location", authenticateToken, async (req, res) => {
   } catch (err) {
     console.error("Error updating location:", err);
     res.status(500).send("Server error");
+  }
+});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+router.get("/recommendations/:location", authenticateToken, (req, res) => {
+  const location = req.params.location || "slo";
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ error: "Token not provided" });
+  }
+
+  const scriptPath = path.join(__dirname, "../recommender.py");
+  const python = spawn("python", [scriptPath, location, token], {
+    cwd: path.dirname(scriptPath),
+  });
+
+  let result = "";
+  let errorOutput = "";
+
+  python.stdout.on("data", (data) => {
+    result += data.toString();
+  });
+
+  python.stderr.on("data", (data) => {
+    errorOutput += data.toString();
+  });
+
+  python.on("close", (code) => {
+    if (code !== 0) {
+      return res
+        .status(500)
+        .json({ error: "Python script error", details: errorOutput });
+    }
+
+    try {
+      const parsed = JSON.parse(result);
+      res.json(parsed);
+    } catch (err) {
+      res.status(500).json({ error: "Failed to parse Python output", result });
+    }
+  });
+});
+
+// Get visited restaurants
+router.get("/visited", authenticateToken, async (req, res) => {
+  try {
+    const user = await Users.findOne({ name: req.user.username })
+      .select("visitedRestaurants")
+      .lean(); // Add lean() for better performance
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Sort by most recent first
+    const sortedVisited = user.visitedRestaurants.sort((a, b) => 
+      new Date(b.visitDate) - new Date(a.visitDate)
+    );
+    
+    res.json(sortedVisited);
+  } catch (error) {
+    console.error("Error fetching visited restaurants:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Add/Update visited restaurant
+router.post("/visited", authenticateToken, async (req, res) => {
+  try {
+    const { restaurantId, name, rating, review, images } = req.body;
+    
+    if (!restaurantId || !name || !rating) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const user = await Users.findOne({ name: req.user.username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const existingIndex = user.visitedRestaurants.findIndex(
+      r => r.restaurantId === restaurantId || r.name === name
+    );
+
+    const visitData = {
+      restaurantId,
+      name,
+      rating,
+      review,
+      images,
+      visitDate: new Date()
+    };
+
+    if (existingIndex > -1) {
+      user.visitedRestaurants[existingIndex] = {
+        ...user.visitedRestaurants[existingIndex],
+        ...visitData
+      };
+    } else {
+      user.visitedRestaurants.unshift(visitData); // Add new visits to the beginning
+    }
+
+    await user.save();
+    res.json(user.visitedRestaurants);
+  } catch (error) {
+    console.error("Error updating visited restaurants:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Update visited restaurant review
+router.put("/visited", authenticateToken, async (req, res) => {
+  try {
+    const { restaurantId, name, rating, review, images } = req.body;
+    
+    if (!restaurantId || !name || !rating) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    if (review && review.length > 300) {
+      return res.status(400).json({ message: "Review must be 300 characters or less" });
+    }
+
+    const user = await Users.findOne({ name: req.user.username });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const visitedIndex = user.visitedRestaurants.findIndex(
+      r => r.restaurantId === restaurantId
+    );
+
+    if (visitedIndex === -1) {
+      return res.status(404).json({ message: "Restaurant review not found" });
+    }
+
+    user.visitedRestaurants[visitedIndex] = {
+      ...user.visitedRestaurants[visitedIndex],
+      rating,
+      review,
+      images, // Add images to the update
+      visitDate: new Date()
+    };
+
+    await user.save();
+    res.json(user.visitedRestaurants);
+  } catch (error) {
+    console.error("Error updating restaurant review:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
