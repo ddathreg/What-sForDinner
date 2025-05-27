@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 import FunnyAd from "../components/FunnyAd";
 import LocationPicker from "../components/LocationPicker";
+import RestaurantHistory from "../components/RestaurantHistory";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({
@@ -92,30 +94,23 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div style={{ textAlign: "center", marginTop: "20px", color: "white" }}>
+      <div className="profile-root">
         <h2>Please log in to view your profile</h2>
       </div>
     );
   }
 
   return (
-    <div style={{ textAlign: "center", marginTop: "20px", color: "white" }}>
-      <h1>{user.displayName || user.name}</h1>
+    <div className="profile-root">
+      <h1 className="profile-title">{user.displayName || user.name}</h1>
       {!isEditing ? (
         <>
           <img
             src={user.profilePic || "https://via.placeholder.com/300"}
             alt="Profile"
-            style={{
-              borderRadius: "50%",
-              width: "300px",
-              height: "300px",
-              border: "3px solid white",
-              marginBottom: "20px",
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-            }}
+            className="profile-avatar"
           />
-          <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+          <div className="profile-details">
             <p>
               <strong>Bio:</strong> {user.bio || "No bio available"}
             </p>
@@ -126,7 +121,10 @@ const Profile = () => {
               <strong>Phone:</strong>{" "}
               {user.phone || "No phone number available"}
             </p>
-            <LocationPicker token={localStorage.getItem("authToken")} />
+            <LocationPicker
+              token={localStorage.getItem("authToken")}
+              onLocationChange={setLocation}
+            />
             <Button
               variant="contained"
               onClick={() => setIsEditing(true)}
@@ -137,7 +135,7 @@ const Profile = () => {
           </div>
         </>
       ) : (
-        <Box sx={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
+        <Box className="profile-edit-form">
           <TextField
             fullWidth
             label="Display Name"
@@ -145,7 +143,7 @@ const Profile = () => {
             onChange={(e) =>
               setEditedUser({ ...editedUser, displayName: e.target.value })
             }
-            sx={{ mb: 2, bgcolor: "white" }}
+            className="profile-textfield"
           />
           <TextField
             fullWidth
@@ -156,7 +154,7 @@ const Profile = () => {
             }
             multiline
             rows={4}
-            sx={{ mb: 2, bgcolor: "white" }}
+            className="profile-textfield"
           />
           <TextField
             fullWidth
@@ -165,7 +163,7 @@ const Profile = () => {
             onChange={(e) =>
               setEditedUser({ ...editedUser, email: e.target.value })
             }
-            sx={{ mb: 2, bgcolor: "white" }}
+            className="profile-textfield"
           />
           <TextField
             fullWidth
@@ -174,7 +172,7 @@ const Profile = () => {
             onChange={(e) =>
               setEditedUser({ ...editedUser, phone: e.target.value })
             }
-            sx={{ mb: 2, bgcolor: "white" }}
+            className="profile-textfield"
           />
           <TextField
             fullWidth
@@ -183,9 +181,9 @@ const Profile = () => {
             onChange={(e) =>
               setEditedUser({ ...editedUser, profilePic: e.target.value })
             }
-            sx={{ mb: 2, bgcolor: "white" }}
+            className="profile-textfield"
           />
-          <Box sx={{ mt: 2 }}>
+          <Box className="profile-edit-actions">
             <Button
               variant="contained"
               onClick={handleUpdateProfile}
@@ -196,7 +194,7 @@ const Profile = () => {
             <Button
               variant="outlined"
               onClick={() => setIsEditing(false)}
-              sx={{ color: "white", borderColor: "white" }}
+              className="profile-cancel-btn"
             >
               Cancel
             </Button>
@@ -226,6 +224,7 @@ const Profile = () => {
         </Alert>
       </Snackbar>
       <FunnyAd />
+      <RestaurantHistory />
     </div>
   );
 };

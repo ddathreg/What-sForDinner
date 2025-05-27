@@ -21,25 +21,39 @@ const Home = () => {
 
   const fetchLocation = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/location", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-      const data = await res.json();
-      setCity(data.location.toLowerCase());
+      if (localStorage.getItem("authToken")) {
+        const res = await fetch("http://localhost:8000/users/location", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        const data = await res.json();
+        setCity((data.location || "slo").toLowerCase());
+      } else {
+        // For guests, read from localStorage
+        const guestLocation = localStorage.getItem("guestLocation") || "slo";
+        setCity(guestLocation.toLowerCase());
+      }
     } catch (err) {
-      console.error("Error fetching user location:", err);
+      const defaultLocation = localStorage.getItem("guestLocation") || "slo";
+      setCity(defaultLocation.toLowerCase());
+      console.error("Error fetching location:", err);
     }
   };
 
   const fetchFilters = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/filters", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
+      let res;
+      if (localStorage.getItem("authToken")) {
+        res = await fetch("http://localhost:8000/users/filters", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+      } else {
+        // Use guest endpoint if not authenticated
+        res = await fetch("http://localhost:8000/users/guest/filters");
+      }
       const data = await res.json();
       setFilters(data.filters);
       setFiltersLoaded(true);
@@ -123,7 +137,7 @@ const Home = () => {
       <h1 className="page-title">What's For Dinner?</h1>
       <div className="home-container">
         <div className="filters-container">
-          <div className="filters-display">
+        <div className="filters-display">
             <p><strong>City:</strong> {city || "Loading city..."}</p>
             <p><strong>Search Query:</strong> {filters.searchQuery || "None"}</p>
             <p><strong>Type:</strong> {filters.type || "Any"}</p>
@@ -150,22 +164,13 @@ const Home = () => {
                 }))}
               />
             </div>
-            <div className="reopen-container">
-              {selectedItem ? (
-                <button className="reopen-button" onClick={handleReopenModal}>
-                  Reopen Pick
-                </button>
-              ) : (
-                <span style={{ visibility: "hidden" }}>placeholder</span>
-              )}
-            </div>
           </>
         ) : (
           <p>Loading restaurants or no restaurants found...</p>
         )}
       </div>
   
-      {selectedItem && <p className="result-text">Selected Restaurant: {selectedItem.name}</p>}
+      {selectedItem && <p className="result-text" onClick={handleReopenModal}>Selected Restaurant: {selectedItem.name}</p>}
   
       <RestaurantModal
         open={open}

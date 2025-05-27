@@ -8,10 +8,16 @@ const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    localStorage.removeItem("authToken"); // Remove token from localStorage
-    localStorage.removeItem("isGuest"); // Remove guest flag if present
-    setIsAuthenticated(false); // Update authentication state
-    navigate("/login"); // Redirect to login page
+    let currentLocation = localStorage.getItem("currentLocation");
+    if (!currentLocation) {
+      currentLocation = "slo";
+    }
+    localStorage.setItem("guestLocation", currentLocation);
+
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("isGuest");
+    setIsAuthenticated(false);
+    window.location.href = "/login";
   };
 
   const handleSignIn = () => {
@@ -45,23 +51,23 @@ const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
         </Button>
 
         {/* Add Sign In or Sign Out button */}
-        {localStorage.getItem("isGuest") === "true" ? (
-          // If the user is a guest, show "Sign In"
-          <Button
-            className="navbar-button"
-            onClick={handleSignIn}
-            sx={{ color: "white" }}
-          >
-            Sign In
-          </Button>
-        ) : (
-          // If the user is not a guest, show "Sign Out"
+        {localStorage.getItem("authToken") ? (
+          // If the user has a real auth token, show "Sign Out"
           <Button
             className="navbar-button"
             onClick={handleSignOut}
             sx={{ color: "white" }}
           >
             Sign Out
+          </Button>
+        ) : (
+          // If the user is a guest or not logged in, show "Sign In"
+          <Button
+            className="navbar-button"
+            onClick={handleSignIn}
+            sx={{ color: "white" }}
+          >
+            Sign In
           </Button>
         )}
       </Toolbar>

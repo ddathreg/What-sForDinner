@@ -11,6 +11,7 @@ import Restaurants from "./pages/Restaurants";
 import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
+import { Button } from "@mui/material";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -53,52 +54,53 @@ function App() {
     return <div>Loading...</div>;
   }
 
+  // Helper for restricted pages
+  const SignInPrompt = ({ message }) => (
+    <div style={{ textAlign: "center", marginTop: "100px", color: "white" }}>
+      <h2>{message}</h2>
+      <Button
+        variant="contained"
+        onClick={() => (window.location.href = "/login")}
+        sx={{
+          mt: 2,
+          bgcolor: "#1976d2",
+          "&:hover": { bgcolor: "#115293" },
+        }}
+      >
+        Sign In
+      </Button>
+    </div>
+  );
+
   return (
     <Router>
       <div>
-        {isAuthenticated && (
-          <NavBar
-            isAuthenticated={isAuthenticated}
-            setIsAuthenticated={setIsAuthenticated}
-          />
-        )}
+        <NavBar
+          isAuthenticated={isAuthenticated}
+          setIsAuthenticated={setIsAuthenticated}
+        />
         <Routes>
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? <Home /> : <Navigate to="/login" replace />
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              !isAuthenticated ? (
-                <Login setIsAuthenticated={setIsAuthenticated} />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route
-            path="/restaurants"
-            element={
-              isAuthenticated ? (
-                <Restaurants />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
+          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/restaurants" element={<Restaurants />} />
           <Route
             path="/favorites"
             element={
-              isAuthenticated ? <Favorites /> : <Navigate to="/login" replace />
+              isAuthenticated && localStorage.getItem("authToken") ? (
+                <Favorites />
+              ) : (
+                <SignInPrompt message="Please sign in to view favorites" />
+              )
             }
           />
           <Route
             path="/profile"
             element={
-              isAuthenticated ? <Profile /> : <Navigate to="/login" replace />
+              isAuthenticated && localStorage.getItem("authToken") ? (
+                <Profile />
+              ) : (
+                <SignInPrompt message="Please sign in to view your profile" />
+              )
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />

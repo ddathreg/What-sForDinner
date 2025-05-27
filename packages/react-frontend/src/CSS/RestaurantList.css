@@ -13,7 +13,7 @@
     overflow: hidden;
     width: 300px;
     height: 300px;
-    background-color: #333333 !important;
+    background-color: var(--secondary)!important;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

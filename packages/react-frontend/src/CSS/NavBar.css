@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #333333 !important;
+    background-color: var(--primary)!important;
     position: fixed;
     width: 100%;
     top: 0;
@@ -30,7 +30,7 @@
 
   .navbar-button:hover {
     color: var(--hover) !important;
-    background-color: #333333 !important;
+    background-color: var(--secondary)!important;
   }
   
   .navbar-profile {

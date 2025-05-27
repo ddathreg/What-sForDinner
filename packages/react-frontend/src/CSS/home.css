@@ -9,15 +9,35 @@
   min-height: 50vh;
 }
 
+/* Page title container */
+
+.page-title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+}
+
 .page-title {
-  color: white;
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  width: 420px;
+  height: 20px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--background);
+  background: var(--primary);
+  font-size: 2.2rem;
+  font-weight: bold;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  text-align: center;
+  text-shadow: 1px 2px 8px rgba(0,0,0,0.12);
+  padding: 2rem;
 }
 
 .home-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -26,16 +46,16 @@
 
 .filters-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
-  justify-content: center;  /* <-- Add this line to center vertically */
+  justify-content: center;  
   margin-right: 2rem;
   color: white;
 }
 
 .filters-display {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: flex-start;
 }
 
@@ -57,7 +77,7 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: 0.3s ease;
   /* margin-top: .5rem; */
 }
   
@@ -75,7 +95,9 @@
   .result-text {
     margin-top: 1rem;
     font-size: 1.5rem;
-    color: white;
+    color: var(--text);
+    cursor: pointer;
+    text-decoration: underline;
   }
 
   .filters-display {
@@ -83,37 +105,9 @@
     justify-content: space-around; 
     margin-bottom: 20px;
     flex-wrap: wrap; 
-  }
-  
-  .filters-display p {
     margin: 0 10px;
-    color: white;
-    font-size: 1rem;
-  }
-
-  .reopen-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-width: 175px; /* enough width to match button size */
-    height: 100%; /* stretch vertically with wheel */
-    /* background-color: black; */
-    margin-left: 2rem;
-  }
-  
-
-  .reopen-button {
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-    margin-left: 2rem;
-
-  }
-  
+    color: var(--text);
+    font-size: 1rem; 
+}
   
   

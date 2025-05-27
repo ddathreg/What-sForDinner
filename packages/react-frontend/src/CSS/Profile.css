@@ -1,0 +1,46 @@
+.profile-root {
+  text-align: center;
+  margin-top: 20px;
+  color: white;
+}
+
+.profile-title {
+  margin-bottom: 2rem;
+  font-weight: bold;
+}
+
+.profile-avatar {
+  border-radius: 50%;
+  width: 300px;
+  height: 300px;
+  border: 3px solid white;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+}
+
+.profile-details {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-edit-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-textfield {
+  margin-bottom: 16px !important;
+  background-color: white;
+}
+
+.profile-edit-actions {
+  margin-top: 16px;
+}
+
+.profile-cancel-btn {
+  color: white !important;
+  border-color: white !important;
+}

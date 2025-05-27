@@ -10,13 +10,9 @@
   .restaurants-page h1 {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
-    color: #ffffff;
+    color: var(--text);
     text-align: center;
     font-family: Tahoma;
-  }
-
-  a {
-    color: black
   }
   
   
