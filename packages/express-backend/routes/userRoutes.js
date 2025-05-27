@@ -220,24 +220,26 @@ router.post("/favorites", authenticateToken, async (req, res) => {
     const username = req.user.username;
     const restaurant = req.body.restaurant;
 
-    const user = await Users.findOne({ name: username });
+    if (!restaurant) {
+      return res.status(400).json({ message: "Restaurant data is required." });
+    }
 
+    const user = await Users.findOne({ name: username });
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
     const existingFavorite = user.favorites.find(
-      (fav) => fav.name === restaurant.name,
+      (fav) => fav.name === restaurant.name
     );
 
     if (!existingFavorite) {
-      if (!restaurant) {
-        return res.status(404).json({ message: "Restaurant not found." });
-      }
+      // Add to favorites
       user.favorites.push(restaurant);
     } else {
+      // Remove from favorites
       user.favorites = user.favorites.filter(
-        (fav) => fav.name !== restaurant.name,
+        (fav) => fav.name !== restaurant.name
       );
     }
 
@@ -373,6 +375,113 @@ router.get("/recommendations/:location", authenticateToken, (req, res) => {
       res.status(500).json({ error: "Failed to parse Python output", result });
     }
   });
+});
+
+// Get visited restaurants
+router.get("/visited", authenticateToken, async (req, res) => {
+  try {
+    const user = await Users.findOne({ name: req.user.username })
+      .select("visitedRestaurants")
+      .lean(); // Add lean() for better performance
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Sort by most recent first
+    const sortedVisited = user.visitedRestaurants.sort((a, b) => 
+      new Date(b.visitDate) - new Date(a.visitDate)
+    );
+    
+    res.json(sortedVisited);
+  } catch (error) {
+    console.error("Error fetching visited restaurants:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Add/Update visited restaurant
+router.post("/visited", authenticateToken, async (req, res) => {
+  try {
+    const { restaurantId, name, rating, review, images } = req.body;
+    
+    if (!restaurantId || !name || !rating) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const user = await Users.findOne({ name: req.user.username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const existingIndex = user.visitedRestaurants.findIndex(
+      r => r.restaurantId === restaurantId || r.name === name
+    );
+
+    const visitData = {
+      restaurantId,
+      name,
+      rating,
+      review,
+      images,
+      visitDate: new Date()
+    };
+
+    if (existingIndex > -1) {
+      user.visitedRestaurants[existingIndex] = {
+        ...user.visitedRestaurants[existingIndex],
+        ...visitData
+      };
+    } else {
+      user.visitedRestaurants.unshift(visitData); // Add new visits to the beginning
+    }
+
+    await user.save();
+    res.json(user.visitedRestaurants);
+  } catch (error) {
+    console.error("Error updating visited restaurants:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Update visited restaurant review
+router.put("/visited", authenticateToken, async (req, res) => {
+  try {
+    const { restaurantId, name, rating, review, images } = req.body;
+    
+    if (!restaurantId || !name || !rating) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    if (review && review.length > 300) {
+      return res.status(400).json({ message: "Review must be 300 characters or less" });
+    }
+
+    const user = await Users.findOne({ name: req.user.username });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const visitedIndex = user.visitedRestaurants.findIndex(
+      r => r.restaurantId === restaurantId
+    );
+
+    if (visitedIndex === -1) {
+      return res.status(404).json({ message: "Restaurant review not found" });
+    }
+
+    user.visitedRestaurants[visitedIndex] = {
+      ...user.visitedRestaurants[visitedIndex],
+      rating,
+      review,
+      images, // Add images to the update
+      visitDate: new Date()
+    };
+
+    await user.save();
+    res.json(user.visitedRestaurants);
+  } catch (error) {
+    console.error("Error updating restaurant review:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 export default router;
