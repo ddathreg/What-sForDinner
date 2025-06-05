@@ -18,13 +18,7 @@ const allowedOrigins = [
   "https://ambitious-tree-0c41c301e.6.azurestaticapps.net", // deployed frontend
 ];
 
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
+app.use(cors());
 
 // Add limits to express.json middleware
 app.use(express.json({ limit: "50mb" }));

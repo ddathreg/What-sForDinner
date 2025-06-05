@@ -7,6 +7,7 @@ const Favorites = () => {
   const [referenceFavorite, setReferenceFavorite] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchFavorites = async (token) => {
     const response = await fetch(
@@ -61,6 +62,7 @@ const Favorites = () => {
     }
 
     setIsSignedIn(true);
+    setError(null);
 
     try {
       await fetchFavorites(token);
@@ -68,6 +70,7 @@ const Favorites = () => {
       await fetchRecommendations(token, location);
     } catch (error) {
       console.error(error);
+      setError(error.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -98,7 +101,11 @@ const Favorites = () => {
         <p>No favorite restaurants found.</p>
       )}
       <h1>Recommended</h1>
-      <h2>Becasue you liked {referenceFavorite.name} </h2>
+      {referenceFavorite ? (
+        <h2>Because you liked {referenceFavorite.name}</h2>
+      ) : (
+        <h2>Recommendations based on your favorites</h2>
+      )}
       {recommendations.length > 0 ? (
         <RestaurantList restaurants={recommendations} />
       ) : (
