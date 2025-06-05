@@ -21,7 +21,12 @@ import { IconButton } from "@mui/material";
 import "../CSS/RestaurantList.css";
 
 //create RestaurantCard component
-const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitStatusChange }) => {
+const RestaurantCard = ({
+  restaurant,
+  userFavorites,
+  onToggleFavorite,
+  onVisitStatusChange,
+}) => {
   const [hover, setHover] = useState(false);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [isVisited, setIsVisited] = useState(false);
@@ -32,15 +37,19 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
     if (!token) return;
 
     try {
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       if (response.ok) {
         const visited = await response.json();
         const isVisitedRestaurant = visited.some(
-          (v) => v.restaurantId === restaurant._id || v.name === restaurant.name
+          (v) =>
+            v.restaurantId === restaurant._id || v.name === restaurant.name,
         );
         setIsVisited(isVisitedRestaurant);
       }
@@ -86,8 +95,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
           "&:hover": {
             transform: "scale(1.03)",
           },
-        }}
-      >
+        }}>
         {/* Add Visited Icon */}
         {(hover || isVisited) && (
           <Box sx={{ position: "absolute", top: 8, left: 8, zIndex: 2 }}>
@@ -159,8 +167,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
                 color: "gray",
                 textAlign: "center",
                 padding: "1rem",
-              }}
-            >
+              }}>
               No image available
             </div>
           )}
@@ -182,8 +189,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
             transition: "opacity 0.3s ease",
             padding: "1rem",
             overflowY: "auto",
-          }}
-        >
+          }}>
           <p>
             <strong>Website: </strong>
             {restaurant.link ? (
@@ -191,8 +197,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
                 href={restaurant.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#4dabf7" }}
-              >
+                style={{ color: "#4dabf7" }}>
                 Visit Website
               </a>
             ) : (
@@ -228,8 +233,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
                 href={restaurant.menu_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#4dabf7" }}
-              >
+                style={{ color: "#4dabf7" }}>
                 View Menu
               </a>
             ) : (
@@ -243,8 +247,7 @@ const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite, onVisitSt
                 href={restaurant.reservation_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#4dabf7" }}
-              >
+                style={{ color: "#4dabf7" }}>
                 Make a Reservation
               </a>
             ) : (
@@ -280,7 +283,9 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
     files.forEach((file) => {
       // Check file size
       if (file.size > maxFileSize) {
-        setImageError(`Image "${file.name}" is too large. Maximum size is 5MB.`);
+        setImageError(
+          `Image "${file.name}" is too large. Maximum size is 5MB.`,
+        );
         return;
       }
 
@@ -290,7 +295,9 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
         img.onload = () => {
           // Check dimensions
           if (img.width > 4000 || img.height > 4000) {
-            setImageError(`Image "${file.name}" dimensions are too large. Maximum dimensions are 4000x4000 pixels.`);
+            setImageError(
+              `Image "${file.name}" dimensions are too large. Maximum dimensions are 4000x4000 pixels.`,
+            );
             return;
           }
 
@@ -338,20 +345,23 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
     }
 
     try {
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      const response = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          body: JSON.stringify({
+            restaurantId: restaurant._id,
+            name: restaurant.name,
+            rating,
+            review,
+            images, // Include images in the request
+          }),
         },
-        body: JSON.stringify({
-          restaurantId: restaurant._id,
-          name: restaurant.name,
-          rating,
-          review,
-          images, // Include images in the request
-        }),
-      });
+      );
 
       if (response.ok) {
         onClose();
@@ -388,8 +398,7 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
           bgcolor: "#333",
           color: "white",
         },
-      }}
-    >
+      }}>
       <DialogTitle>{restaurant?.name}</DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2 }}>
@@ -448,9 +457,8 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
               backgroundColor: "rgba(255,0,0,0.1)",
               padding: "8px",
               borderRadius: "4px",
-              fontSize: "0.875rem"
-            }}
-          >
+              fontSize: "0.875rem",
+            }}>
             {imageError}
           </Typography>
         )}
@@ -474,8 +482,7 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
                 borderColor: "white",
                 "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
               }}
-              variant="outlined"
-            >
+              variant="outlined">
               Add Photos
             </Button>
           </label>
@@ -484,9 +491,8 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
             sx={{
               display: "block",
               mt: 1,
-              color: "rgba(255,255,255,0.7)"
-            }}
-          >
+              color: "rgba(255,255,255,0.7)",
+            }}>
             Maximum file size: 5MB. Supported formats: JPG, PNG
           </Typography>
         </Box>
@@ -499,8 +505,7 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
               gap: 1,
               mt: 2,
               flexWrap: "wrap",
-            }}
-          >
+            }}>
             {images.map((img, index) => (
               <Box key={index} sx={{ position: "relative" }}>
                 <img
@@ -525,8 +530,7 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
                     "&:hover": {
                       bgcolor: "rgba(255,0,0,0.7)",
                     },
-                  }}
-                >
+                  }}>
                   <DeleteIcon fontSize="small" />
                 </IconButton>
               </Box>
@@ -544,8 +548,7 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
           sx={{
             bgcolor: "#4CAF50",
             "&:hover": { bgcolor: "#45a049" },
-          }}
-        >
+          }}>
           Submit Review
         </Button>
       </DialogActions>
@@ -555,7 +558,11 @@ const ReviewDialog = ({ open, onClose, restaurant, onReviewSubmitted }) => {
 
 //list all restaurant using RestaurantCard component
 
-const RestaurantList = ({ restaurants, onFavoriteToggle, onVisitStatusChange }) => {
+const RestaurantList = ({
+  restaurants,
+  onFavoriteToggle,
+  onVisitStatusChange,
+}) => {
   const [favorites, setFavorites] = useState([]);
 
   const fetchFavorites = async () => {
@@ -563,11 +570,14 @@ const RestaurantList = ({ restaurants, onFavoriteToggle, onVisitStatusChange }) 
     if (!token) return;
 
     try {
-      const res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       const data = await res.json();
       setFavorites(data || []);
     } catch (error) {
@@ -583,14 +593,17 @@ const RestaurantList = ({ restaurants, onFavoriteToggle, onVisitStatusChange }) 
     }
 
     try {
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ restaurant }),
         },
-        body: JSON.stringify({ restaurant }),
-      });
+      );
       if (response.ok) {
         await fetchFavorites();
       }
