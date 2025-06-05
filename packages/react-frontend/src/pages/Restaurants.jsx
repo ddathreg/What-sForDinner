@@ -56,7 +56,7 @@ const Restaurants = () => {
       } else {
         // Use guest endpoint if not authenticated
         res = await fetch(
-          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/guest/filters",
+          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/guest/filters",
         );
       }
       const data = await res.json();
@@ -148,7 +148,7 @@ const Restaurants = () => {
         token={localStorage.getItem("authToken")}
         onLocationChange={setCity}
       />
-      <SearchFilter filters={filters} setFilters={setFilters} />
+      <SearchFilter filters={filters} setFilters={setFilters} city={city} />
       {restaurants.length > 0 ? (
         <RestaurantList
           restaurants={restaurants}

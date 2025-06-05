@@ -13,9 +13,20 @@ dotenv.config();
 const app = express();
 const port = 8000;
 
+const allowedOrigins = [
+  "http://localhost:5173", // local Vite frontend
+  "https://ambitious-tree-0c41c301e.6.azurestaticapps.net", // deployed frontend
+];
+
 app.use(
   cors({
-    origin: "https://ambitious-tree-0c41c301e.6.azurestaticapps.net",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );

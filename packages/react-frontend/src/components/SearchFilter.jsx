@@ -43,8 +43,7 @@ const RatingDropdown = ({ filters, setFilters }) => {
       select
       label="Minimum Rating"
       value={filters.min_rating}
-      onChange={handleChange}
-    >
+      onChange={handleChange}>
       <MenuItem value={0}>Any</MenuItem>
       {ratingOptions.map((rating) => (
         <MenuItem key={rating} value={rating}>
@@ -65,9 +64,9 @@ const TypeDropdown = ({ filters, setFilters, city }) => {
           `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/restaurants/${city.toLowerCase()}`,
         );
         const data = await response.json();
-
-        // Flatten and remove duplicates
-        const uniqueTypes = [...new Set(data.flatMap((r) => r.cuisines))];
+        const uniqueTypes = [...new Set(data.flatMap((r) => r.cuisines))].sort(
+          (a, b) => a.localeCompare(b),
+        );
         setTypes(uniqueTypes);
       } catch (error) {
         console.error("Error fetching restaurant types:", error);
@@ -90,8 +89,7 @@ const TypeDropdown = ({ filters, setFilters, city }) => {
       select
       label="Type"
       value={filters.type}
-      onChange={handleChange}
-    >
+      onChange={handleChange}>
       <MenuItem value="">All Types</MenuItem>
       {types.map((type) => (
         <MenuItem key={type} value={type}>
@@ -118,8 +116,7 @@ const PriceDropdown = ({ filters, setFilters }) => {
       select
       label="Price"
       value={filters.price}
-      onChange={handleChange}
-    >
+      onChange={handleChange}>
       <MenuItem value="">Any Price</MenuItem>
       {priceOptions.map((price) => (
         <MenuItem key={price} value={price}>
@@ -145,11 +142,7 @@ const SearchFilter = ({ filters, setFilters, city }) => {
       <RatingDropdown filters={filters} setFilters={setFilters} />
       <TypeDropdown filters={filters} setFilters={setFilters} city={city} />
       <PriceDropdown filters={filters} setFilters={setFilters} />
-      <Button
-        onClick={() => setFilters(defaultFilters)}
-      >
-        Reset
-      </Button>
+      <Button onClick={() => setFilters(defaultFilters)}>Reset</Button>
     </Box>
   );
 };
