@@ -52,21 +52,22 @@ const Favorites = () => {
   };
 
   const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("authToken");
-      if (!token) {
-        setIsSignedIn(false);
-        setLoading(false);
-        return;
-      }
+    const token = localStorage.getItem("authToken");
 
-      setIsSignedIn(true);
+    if (!token) {
+      setIsSignedIn(false);
+      setLoading(false);
+      return;
+    }
+
+    setIsSignedIn(true);
+
+    try {
       await fetchFavorites(token);
       const location = await fetchLocation(token);
       await fetchRecommendations(token, location);
     } catch (error) {
       console.error(error);
-      setIsSignedIn(false);
     } finally {
       setLoading(false);
     }
