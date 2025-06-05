@@ -24,12 +24,14 @@ function App() {
 
       if (token) {
         try {
-          // const response = await fetch("http://localhost:8000/users/verify", {
-          const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/verify", {
-            headers: {
-              Authorization: `Bearer ${token}`,
+          const response = await fetch(
+            "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/verify",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          });
+          );
 
           if (response.ok) {
             setIsAuthenticated(true);
@@ -65,8 +67,7 @@ function App() {
           mt: 2,
           bgcolor: "#1976d2",
           "&:hover": { bgcolor: "#115293" },
-        }}
-      >
+        }}>
         Sign In
       </Button>
     </div>
@@ -80,7 +81,10 @@ function App() {
           setIsAuthenticated={setIsAuthenticated}
         />
         <Routes>
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route
+            path="/login"
+            element={<Login setIsAuthenticated={setIsAuthenticated} />}
+          />
           <Route path="/" element={<Home />} />
           <Route path="/restaurants" element={<Restaurants />} />
           <Route
