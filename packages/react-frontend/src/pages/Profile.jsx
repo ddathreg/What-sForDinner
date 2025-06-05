@@ -26,11 +26,14 @@ const Profile = () => {
         return;
       }
 
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/details", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/details",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -48,14 +51,17 @@ const Profile = () => {
   const handleUpdateProfile = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/update",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(editedUser),
         },
-        body: JSON.stringify(editedUser),
-      });
+      );
 
       if (response.ok) {
         const updatedUser = await response.json();
@@ -128,8 +134,7 @@ const Profile = () => {
             <Button
               variant="contained"
               onClick={() => setIsEditing(true)}
-              sx={{ mt: 2 }}
-            >
+              sx={{ mt: 2 }}>
               Edit Profile
             </Button>
           </div>
@@ -187,15 +192,13 @@ const Profile = () => {
             <Button
               variant="contained"
               onClick={handleUpdateProfile}
-              sx={{ mr: 2 }}
-            >
+              sx={{ mr: 2 }}>
               Save Changes
             </Button>
             <Button
               variant="outlined"
               onClick={() => setIsEditing(false)}
-              className="profile-cancel-btn"
-            >
+              className="profile-cancel-btn">
               Cancel
             </Button>
           </Box>
@@ -205,8 +208,7 @@ const Profile = () => {
         open={showSuccess}
         autoHideDuration={3000}
         onClose={() => setShowSuccess(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
         <Alert
           onClose={() => setShowSuccess(false)}
           severity="success"
@@ -218,8 +220,7 @@ const Profile = () => {
             "& .MuiAlert-icon": {
               color: "white",
             },
-          }}
-        >
+          }}>
           Changes have been saved :)
         </Alert>
       </Snackbar>

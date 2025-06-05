@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const LocationPicker = ({ token, onLocationChange }) => {
   const [selectedLocation, setSelectedLocation] = useState(
-    localStorage.getItem("guestLocation") || "slo"
+    localStorage.getItem("guestLocation") || "slo",
   );
 
   const locationMap = {
@@ -10,10 +10,10 @@ const LocationPicker = ({ token, onLocationChange }) => {
     "San Francisco": "sf",
     "Los Angeles": "la",
     "New York City": "nyc",
-    "Chicago": "chi",
-    "Miami": "mia",
-    "Austin": "atx",
-    "Honolulu": "hnl",
+    Chicago: "chi",
+    Miami: "mia",
+    Austin: "atx",
+    Honolulu: "hnl",
     "New Orleans": "nola",
   };
 
@@ -21,9 +21,12 @@ const LocationPicker = ({ token, onLocationChange }) => {
     const fetchCurrentLocation = async () => {
       if (token) {
         try {
-          const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await fetch(
+            "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
           if (!response.ok) throw new Error(await response.text());
           const data = await response.json();
           const location = data.location || "slo";
@@ -50,14 +53,17 @@ const LocationPicker = ({ token, onLocationChange }) => {
 
     if (token) {
       try {
-        await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location", {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        await fetch(
+          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ location: newLocation }),
           },
-          body: JSON.stringify({ location: newLocation }),
-        });
+        );
       } catch (error) {
         console.error("Error updating location:", error);
       }
@@ -69,7 +75,7 @@ const LocationPicker = ({ token, onLocationChange }) => {
 
   return (
     <div style={{ margin: "20px 0" }}>
-      <label htmlFor="location" style={{ marginRight: "10px", color: "black"}}>
+      <label htmlFor="location" style={{ marginRight: "10px", color: "black" }}>
         Select Location:{" "}
       </label>
       <select
@@ -82,8 +88,7 @@ const LocationPicker = ({ token, onLocationChange }) => {
           backgroundColor: "#333",
           color: "white",
           border: "1px solid white",
-        }}
-      >
+        }}>
         {Object.entries(locationMap).map(([label, value]) => (
           <option key={value} value={value}>
             {label}
