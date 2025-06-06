@@ -5,15 +5,9 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [referenceFavorite, setReferenceFavorite] = useState(null);
-<<<<<<< HEAD
-  const [loading, setLoading] = useState(true);
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [error, setError] = useState(null);
-=======
   const [loadingFavorites, setLoadingFavorites] = useState(true);
   const [loadingRecommendations, setLoadingRecommendations] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
 
   const fetchFavorites = async (token) => {
     const response = await fetch(
@@ -25,10 +19,7 @@ const Favorites = () => {
     if (response.status === 401) throw new Error("Unauthorized");
     const data = await response.json();
     setFavorites(data || []);
-<<<<<<< HEAD
-=======
     setLoadingFavorites(false);
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
   };
 
   // Fetch user location to use for recommendations
