@@ -51,10 +51,7 @@ const Favorites = () => {
     );
     setRecommendations(filteredRecommendations);
     setReferenceFavorite(ref);
-<<<<<<< HEAD
-=======
     setLoadingRecommendations(false);
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
   };
 
   const fetchData = async () => {
@@ -62,20 +59,12 @@ const Favorites = () => {
 
     if (!token) {
       setIsSignedIn(false);
-<<<<<<< HEAD
-      setLoading(false);
-=======
       setLoadingFavorites(false);
       setLoadingRecommendations(false);
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
       return;
     }
 
     setIsSignedIn(true);
-<<<<<<< HEAD
-    setError(null);
-=======
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
 
     try {
       await fetchFavorites(token);
@@ -83,10 +72,6 @@ const Favorites = () => {
       await fetchRecommendations(token, location);
     } catch (error) {
       console.error(error);
-<<<<<<< HEAD
-      setError(error.message || "An error occurred");
-=======
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
     } finally {
       setLoadingFavorites(false);
       setLoadingRecommendations(false);
@@ -97,13 +82,6 @@ const Favorites = () => {
     fetchData();
   }, []);
 
-<<<<<<< HEAD
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-=======
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
   if (!isSignedIn) {
     return (
       <div style={{ textAlign: "center", marginTop: "20%", color: "white" }}>
@@ -124,18 +102,6 @@ const Favorites = () => {
       ) : (
         <p>No favorite restaurants found.</p>
       )}
-<<<<<<< HEAD
-      <h1>Recommended</h1>
-      {referenceFavorite ? (
-        <h2>Because you liked {referenceFavorite.name}</h2>
-      ) : (
-        <h2>Recommendations based on your favorites</h2>
-      )}
-      {recommendations.length > 0 ? (
-        <RestaurantList restaurants={recommendations} />
-      ) : (
-        <p>No recommendations available.</p>
-=======
 
       <h1>Recommended</h1>
       {loadingRecommendations ? (
@@ -151,7 +117,6 @@ const Favorites = () => {
             <p>No recommendations available.</p>
           )}
         </>
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
       )}
     </div>
   );
