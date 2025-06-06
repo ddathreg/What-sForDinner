@@ -4,60 +4,113 @@ import FunnyAd from "../components/FunnyAd";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [referenceFavorite, setReferenceFavorite] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = async (token) => {
+    const response = await fetch(
+      "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+    if (response.status === 401) throw new Error("Unauthorized");
+    const data = await response.json();
+    setFavorites(data || []);
+  };
+
+  // Fetch user location to use for recommendations
+  const fetchLocation = async (token) => {
+    const response = await fetch(
+      "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+    if (response.status === 401) throw new Error("Unauthorized");
+    const data = await response.json();
+    return data.location || "slo"; // fallback location
+  };
+
+  // Fetch recommendations based on location
+  const fetchRecommendations = async (token, location) => {
+    const response = await fetch(
+      `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/recommendations`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ location }),
+      },
+    );
+    if (response.status === 401) throw new Error("Unauthorized");
+    const data = await response.json();
+    const ref = data.reference_favorite || null;
+    const filteredRecommendations = (data.recommendations || []).filter(
+      (rec) => !ref || rec.name !== ref.name,
+    );
+    setRecommendations(filteredRecommendations);
+    setReferenceFavorite(ref);
+  };
+
+  const fetchData = async () => {
     const token = localStorage.getItem("authToken");
+
     if (!token) {
+      setIsSignedIn(false);
       setLoading(false);
       return;
     }
 
+    setIsSignedIn(true);
+
     try {
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) throw new Error("Failed to fetch favorites");
-
-      const data = await response.json();
-      setFavorites(data || []);
+      await fetchFavorites(token);
+      const location = await fetchLocation(token);
+      await fetchRecommendations(token, location);
     } catch (error) {
-      console.error("Error fetching favorites:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch on mount and when favorites change
   useEffect(() => {
-    fetchFavorites();
+    fetchData();
   }, []);
 
   if (loading) {
-    return <div style={{ color: "white", textAlign: "center", marginTop: "20px" }}>Loading favorites...</div>;
+    return <p>Loading...</p>;
   }
 
-  if (!localStorage.getItem("authToken")) {
+  if (!isSignedIn) {
     return (
       <div style={{ textAlign: "center", marginTop: "20%", color: "white" }}>
-        <h1>Please sign in to view favorites</h1>
+        <h1>Please sign in to visit favorites & recommendations </h1>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "20px", color: "white" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Your Favorite Restaurants</h1>
+    <div>
+      <h1>Favorites</h1>
       {favorites.length > 0 ? (
-        <RestaurantList
-          restaurants={favorites}
-          onFavoriteToggle={fetchFavorites} // Add this to refresh after toggling
-        />
+        <RestaurantList restaurants={favorites} />
       ) : (
-        <p style={{ textAlign: "center" }}>No favorites yet. Start adding some!</p>
+        <p>No favorite restaurants found.</p>
+      )}
+      <h1>Recommended</h1>
+      {referenceFavorite ? (
+        <h2>Because you liked {referenceFavorite.name}</h2>
+      ) : null}
+      {recommendations.length > 0 ? (
+        <RestaurantList restaurants={recommendations} />
+      ) : (
+        <p>No recommendations available.</p>
       )}
       <FunnyAd />
     </div>

@@ -17,7 +17,7 @@ const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("isGuest");
     setIsAuthenticated(false);
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   const handleSignIn = () => {
@@ -56,8 +56,7 @@ const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
           <Button
             className="navbar-button"
             onClick={handleSignOut}
-            sx={{ color: "white" }}
-          >
+            sx={{ color: "white" }}>
             Sign Out
           </Button>
         ) : (
@@ -65,8 +64,7 @@ const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
           <Button
             className="navbar-button"
             onClick={handleSignIn}
-            sx={{ color: "white" }}
-          >
+            sx={{ color: "white" }}>
             Sign In
           </Button>
         )}

@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useNavigate,
 } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
@@ -16,6 +17,7 @@ import { Button } from "@mui/material";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -24,12 +26,14 @@ function App() {
 
       if (token) {
         try {
-          // const response = await fetch("http://localhost:8000/users/verify", {
-          const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/verify", {
-            headers: {
-              Authorization: `Bearer ${token}`,
+          const response = await fetch(
+            "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/verify",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          });
+          );
 
           if (response.ok) {
             setIsAuthenticated(true);
@@ -60,53 +64,53 @@ function App() {
       <h2>{message}</h2>
       <Button
         variant="contained"
-        onClick={() => (window.location.href = "/login")}
+        onClick={() => navigate("/login")}
         sx={{
           mt: 2,
           bgcolor: "#1976d2",
           "&:hover": { bgcolor: "#115293" },
-        }}
-      >
+        }}>
         Sign In
       </Button>
     </div>
   );
 
   return (
-    <Router>
-      <div>
-        <NavBar
-          isAuthenticated={isAuthenticated}
-          setIsAuthenticated={setIsAuthenticated}
+    <div>
+      <NavBar
+        isAuthenticated={isAuthenticated}
+        setIsAuthenticated={setIsAuthenticated}
+      />
+      <Routes>
+        <Route
+          path="/login"
+          element={<Login setIsAuthenticated={setIsAuthenticated} />}
         />
-        <Routes>
-          <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/restaurants" element={<Restaurants />} />
-          <Route
-            path="/favorites"
-            element={
-              isAuthenticated && localStorage.getItem("authToken") ? (
-                <Favorites />
-              ) : (
-                <SignInPrompt message="Please sign in to view favorites" />
-              )
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              isAuthenticated && localStorage.getItem("authToken") ? (
-                <Profile />
-              ) : (
-                <SignInPrompt message="Please sign in to view your profile" />
-              )
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </div>
-    </Router>
+        <Route path="/" element={<Home />} />
+        <Route path="/restaurants" element={<Restaurants />} />
+        <Route
+          path="/favorites"
+          element={
+            isAuthenticated && localStorage.getItem("authToken") ? (
+              <Favorites />
+            ) : (
+              <SignInPrompt message="Please sign in to view favorites" />
+            )
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            isAuthenticated && localStorage.getItem("authToken") ? (
+              <Profile />
+            ) : (
+              <SignInPrompt message="Please sign in to view your profile" />
+            )
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
   );
 }
 
