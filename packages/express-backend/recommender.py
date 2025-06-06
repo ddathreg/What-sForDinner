@@ -9,7 +9,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder, MultiLabelBinar
 from sklearn.compose import make_column_transformer
 from sklearn.metrics import pairwise_distances
 
-BASE_URL = "http://localhost:8000"
+BASE_URL = "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net"
 
 def get_user_favorites(headers):
     response = requests.get(f"{BASE_URL}/users/favorites", headers=headers)

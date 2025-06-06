@@ -21,9 +21,12 @@ const LocationPicker = ({ token, onLocationChange }) => {
     const fetchCurrentLocation = async () => {
       if (token) {
         try {
-          const response = await fetch("http://localhost:8000/users/location", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await fetch(
+            "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
           if (!response.ok) throw new Error(await response.text());
           const data = await response.json();
           const location = data.location || "slo";
@@ -50,14 +53,17 @@ const LocationPicker = ({ token, onLocationChange }) => {
 
     if (token) {
       try {
-        await fetch("http://localhost:8000/users/location", {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        await fetch(
+          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ location: newLocation }),
           },
-          body: JSON.stringify({ location: newLocation }),
-        });
+        );
       } catch (error) {
         console.error("Error updating location:", error);
       }

@@ -26,11 +26,14 @@ function App() {
 
       if (token) {
         try {
-          const response = await fetch("http://localhost:8000/users/verify", {
-            headers: {
-              Authorization: `Bearer ${token}`,
+          const response = await fetch(
+            "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/verify",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          });
+          );
 
           if (response.ok) {
             setIsAuthenticated(true);

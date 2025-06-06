@@ -11,9 +11,12 @@ const Favorites = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const fetchFavorites = async (token) => {
-    const response = await fetch("http://localhost:8000/users/favorites", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetch(
+      "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     if (response.status === 401) throw new Error("Unauthorized");
     const data = await response.json();
     setFavorites(data || []);
@@ -22,9 +25,12 @@ const Favorites = () => {
 
   // Fetch user location to use for recommendations
   const fetchLocation = async (token) => {
-    const response = await fetch("http://localhost:8000/users/location", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetch(
+      "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     if (response.status === 401) throw new Error("Unauthorized");
     const data = await response.json();
     return data.location || "slo"; // fallback location
@@ -33,7 +39,7 @@ const Favorites = () => {
   // Fetch recommendations based on location
   const fetchRecommendations = async (token, location) => {
     const response = await fetch(
-      `http://localhost:8000/users/recommendations/${location}`,
+      `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/recommendations/${location}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       },
