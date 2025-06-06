@@ -6,29 +6,25 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [referenceFavorite, setReferenceFavorite] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingFavorites, setLoadingFavorites] = useState(true);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
 
   const fetchFavorites = async (token) => {
-    const response = await fetch(
-      "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/favorites",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
+    const response = await fetch("http://localhost:8000/users/favorites", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (response.status === 401) throw new Error("Unauthorized");
     const data = await response.json();
     setFavorites(data || []);
+    setLoadingFavorites(false);
   };
 
   // Fetch user location to use for recommendations
   const fetchLocation = async (token) => {
-    const response = await fetch(
-      "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
+    const response = await fetch("http://localhost:8000/users/location", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (response.status === 401) throw new Error("Unauthorized");
     const data = await response.json();
     return data.location || "slo"; // fallback location
@@ -37,14 +33,9 @@ const Favorites = () => {
   // Fetch recommendations based on location
   const fetchRecommendations = async (token, location) => {
     const response = await fetch(
-      `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/recommendations`,
+      `http://localhost:8000/users/recommendations/${location}`,
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ location }),
+        headers: { Authorization: `Bearer ${token}` },
       },
     );
     if (response.status === 401) throw new Error("Unauthorized");
@@ -55,6 +46,7 @@ const Favorites = () => {
     );
     setRecommendations(filteredRecommendations);
     setReferenceFavorite(ref);
+    setLoadingRecommendations(false);
   };
 
   const fetchData = async () => {
@@ -62,7 +54,8 @@ const Favorites = () => {
 
     if (!token) {
       setIsSignedIn(false);
-      setLoading(false);
+      setLoadingFavorites(false);
+      setLoadingRecommendations(false);
       return;
     }
 
@@ -75,7 +68,8 @@ const Favorites = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoadingFavorites(false);
+      setLoadingRecommendations(false);
     }
   };
 
@@ -83,16 +77,16 @@ const Favorites = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
   if (!isSignedIn) {
     return (
       <div style={{ textAlign: "center", marginTop: "20%", color: "white" }}>
         <h1>Please sign in to visit favorites & recommendations </h1>
       </div>
     );
+  }
+
+  if (loadingFavorites) {
+    return <p>Loading favorites...</p>;
   }
 
   return (
@@ -103,14 +97,21 @@ const Favorites = () => {
       ) : (
         <p>No favorite restaurants found.</p>
       )}
+
       <h1>Recommended</h1>
-      {referenceFavorite ? (
-        <h2>Because you liked {referenceFavorite.name}</h2>
-      ) : null}
-      {recommendations.length > 0 ? (
-        <RestaurantList restaurants={recommendations} />
+      {loadingRecommendations ? (
+        <p>Loading recommendations...</p>
       ) : (
-        <p>No recommendations available.</p>
+        <>
+          {referenceFavorite ? (
+            <h2>Because you liked {referenceFavorite.name}</h2>
+          ) : null}
+          {recommendations.length > 0 ? (
+            <RestaurantList restaurants={recommendations} />
+          ) : (
+            <p>No recommendations available.</p>
+          )}
+        </>
       )}
       <FunnyAd />
     </div>

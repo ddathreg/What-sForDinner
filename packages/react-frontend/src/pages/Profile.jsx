@@ -26,7 +26,7 @@ const Profile = () => {
         return;
       }
 
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/details", {
+      const response = await fetch("http://localhost:8000/users/details", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -48,7 +48,7 @@ const Profile = () => {
   const handleUpdateProfile = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/update", {
+      const response = await fetch("http://localhost:8000/users/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

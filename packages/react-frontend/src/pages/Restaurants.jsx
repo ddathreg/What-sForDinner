@@ -19,14 +19,11 @@ const Restaurants = () => {
   const fetchLocation = async () => {
     try {
       if (localStorage.getItem("authToken")) {
-        const res = await fetch(
-          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
+        const res = await fetch("http://localhost:8000/users/location", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-        );
+        });
         const data = await res.json();
         setCity((data.location || "slo").toLowerCase());
       } else {
@@ -45,19 +42,14 @@ const Restaurants = () => {
     try {
       let res;
       if (localStorage.getItem("authToken")) {
-        res = await fetch(
-          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/filters",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
+        res = await fetch("http://localhost:8000/users/filters", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-        );
+        });
       } else {
         // Use guest endpoint if not authenticated
-        res = await fetch(
-          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/guest/filters",
-        );
+        res = await fetch("http://localhost:8000/users/guest/filters");
       }
       const data = await res.json();
       setFilters(data.filters);
@@ -70,17 +62,14 @@ const Restaurants = () => {
   const saveFilters = async (newFilters) => {
     if (localStorage.getItem("authToken")) {
       try {
-        await fetch(
-          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/filters",
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
-            body: JSON.stringify({ filters: newFilters }),
+        await fetch("http://localhost:8000/users/filters", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-        );
+          body: JSON.stringify({ filters: newFilters }),
+        });
       } catch (err) {
         console.error("Error saving filters:", err);
       }
@@ -105,7 +94,7 @@ const Restaurants = () => {
       queryParams.append("min_rating", filters.min_rating);
 
     const res = await fetch(
-      `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/restaurants/${city}?${queryParams}`,
+      `http://localhost:8000/restaurants/${city}?${queryParams}`,
     );
     return res.json();
   };

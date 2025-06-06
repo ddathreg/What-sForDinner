@@ -21,7 +21,7 @@ const LocationPicker = ({ token, onLocationChange }) => {
     const fetchCurrentLocation = async () => {
       if (token) {
         try {
-          const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location", {
+          const response = await fetch("http://localhost:8000/users/location", {
             headers: { Authorization: `Bearer ${token}` },
           });
           if (!response.ok) throw new Error(await response.text());
@@ -50,7 +50,7 @@ const LocationPicker = ({ token, onLocationChange }) => {
 
     if (token) {
       try {
-        await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location", {
+        await fetch("http://localhost:8000/users/location", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",

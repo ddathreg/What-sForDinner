@@ -29,10 +29,10 @@ const RestaurantHistory = () => {
 
   const fetchVisited = useCallback(async () => {
     try {
-      const response = await fetch('https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited', {
+      const response = await fetch("http://localhost:8000/users/visited", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
       });
       if (response.ok) {
         const data = await response.json();
@@ -83,19 +83,19 @@ const RestaurantHistory = () => {
     }
 
     try {
-      const response = await fetch('https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/visited', {
-        method: isEditing ? 'PUT' : 'POST',
+      const response = await fetch("http://localhost:8000/users/visited", {
+        method: isEditing ? "PUT" : "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('authToken')}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
         body: JSON.stringify({
           restaurantId: selectedRestaurant._id,
           name: selectedRestaurant.name,
           rating,
           review,
-          images // Add images to the request
-        })
+          images, // Add images to the request
+        }),
       });
 
       if (response.ok) {

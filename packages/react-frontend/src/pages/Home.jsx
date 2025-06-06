@@ -22,7 +22,7 @@ const Home = () => {
   const fetchLocation = async () => {
     try {
       if (localStorage.getItem("authToken")) {
-        const res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location", {
+        const res = await fetch("http://localhost:8000/users/location", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
@@ -45,14 +45,14 @@ const Home = () => {
     try {
       let res;
       if (localStorage.getItem("authToken")) {
-        res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/filters", {
+        res = await fetch("http://localhost:8000/users/filters", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
       } else {
         // Use guest endpoint if not authenticated
-        res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/guest/filters");
+        res = await fetch("http://localhost:8000/users/guest/filters");
       }
       const data = await res.json();
       setFilters(data.filters);
@@ -78,7 +78,7 @@ const Home = () => {
 
     try {
       const res = await fetch(
-        `https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/restaurants/${city}?${queryParams}`,
+        `http://localhost:8000/restaurants/${city}?${queryParams}`,
       );
       const data = await res.json();
 
@@ -137,15 +137,17 @@ const Home = () => {
       <h1 className="page-title">What's For Dinner?</h1>
       <div className="home-container">
         <div className="filters-container">
-        <div className="filters-display">
-            <p><strong>City:</strong> {city || "Loading city..."}</p>
-            <p><strong>Search Query:</strong> {filters.searchQuery || "None"}</p>
-            <p><strong>Type:</strong> {filters.type || "Any"}</p>
-            <p><strong>Price:</strong> {filters.price || "Any"}</p>
-            <p><strong>Minimum Rating:</strong> {filters.min_rating || "Any"}</p>
+          <div className="filters-display">
+            <p>
+              <strong>City:</strong> {city || "Loading city..."}{" "}
+              <strong>Search Query:</strong> {filters.searchQuery || "None"}{" "}
+              <strong>Type:</strong> {filters.type || "Any"}{" "}
+              <strong>Price:</strong> {filters.price || "Any"}{" "}
+              <strong>Minimum Rating:</strong> {filters.min_rating || "Any"}
+            </p>
           </div>
         </div>
-  
+
         {restaurants.length > 0 ? (
           <>
             <div className="wheel-container">
@@ -157,8 +159,14 @@ const Home = () => {
                   option: "",
                   style: {
                     backgroundColor: [
-                      "red", "blue", "green", "yellow",
-                      "purple", "orange", "pink", "brown"
+                      "red",
+                      "blue",
+                      "green",
+                      "yellow",
+                      "purple",
+                      "orange",
+                      "pink",
+                      "brown",
                     ][index % 8],
                   },
                 }))}
@@ -169,9 +177,13 @@ const Home = () => {
           <p>Loading restaurants or no restaurants found...</p>
         )}
       </div>
-  
-      {selectedItem && <p className="result-text" onClick={handleReopenModal}>Selected Restaurant: {selectedItem.name}</p>}
-  
+
+      {selectedItem && (
+        <p className="result-text" onClick={handleReopenModal}>
+          Selected Restaurant: {selectedItem.name}
+        </p>
+      )}
+
       <RestaurantModal
         open={open}
         handleClose={handleClose}
@@ -183,7 +195,6 @@ const Home = () => {
       <FunnyAd />
     </div>
   );
-  
 };
 
 export default Home;
