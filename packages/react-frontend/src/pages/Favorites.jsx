@@ -5,9 +5,15 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [referenceFavorite, setReferenceFavorite] = useState(null);
+<<<<<<< HEAD
   const [loading, setLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [error, setError] = useState(null);
+=======
+  const [loadingFavorites, setLoadingFavorites] = useState(true);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
 
   const fetchFavorites = async (token) => {
     const response = await fetch(
@@ -19,6 +25,10 @@ const Favorites = () => {
     if (response.status === 401) throw new Error("Unauthorized");
     const data = await response.json();
     setFavorites(data || []);
+<<<<<<< HEAD
+=======
+    setLoadingFavorites(false);
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
   };
 
   // Fetch user location to use for recommendations
@@ -50,6 +60,10 @@ const Favorites = () => {
     );
     setRecommendations(filteredRecommendations);
     setReferenceFavorite(ref);
+<<<<<<< HEAD
+=======
+    setLoadingRecommendations(false);
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
   };
 
   const fetchData = async () => {
@@ -57,12 +71,20 @@ const Favorites = () => {
 
     if (!token) {
       setIsSignedIn(false);
+<<<<<<< HEAD
       setLoading(false);
+=======
+      setLoadingFavorites(false);
+      setLoadingRecommendations(false);
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
       return;
     }
 
     setIsSignedIn(true);
+<<<<<<< HEAD
     setError(null);
+=======
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
 
     try {
       await fetchFavorites(token);
@@ -70,9 +92,13 @@ const Favorites = () => {
       await fetchRecommendations(token, location);
     } catch (error) {
       console.error(error);
+<<<<<<< HEAD
       setError(error.message || "An error occurred");
+=======
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
     } finally {
-      setLoading(false);
+      setLoadingFavorites(false);
+      setLoadingRecommendations(false);
     }
   };
 
@@ -80,16 +106,23 @@ const Favorites = () => {
     fetchData();
   }, []);
 
+<<<<<<< HEAD
   if (loading) {
     return <p>Loading...</p>;
   }
 
+=======
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
   if (!isSignedIn) {
     return (
       <div style={{ textAlign: "center", marginTop: "20%", color: "white" }}>
         <h1>Please sign in to visit favorites & recommendations </h1>
       </div>
     );
+  }
+
+  if (loadingFavorites) {
+    return <p>Loading favorites...</p>;
   }
 
   return (
@@ -100,6 +133,7 @@ const Favorites = () => {
       ) : (
         <p>No favorite restaurants found.</p>
       )}
+<<<<<<< HEAD
       <h1>Recommended</h1>
       {referenceFavorite ? (
         <h2>Because you liked {referenceFavorite.name}</h2>
@@ -110,6 +144,23 @@ const Favorites = () => {
         <RestaurantList restaurants={recommendations} />
       ) : (
         <p>No recommendations available.</p>
+=======
+
+      <h1>Recommended</h1>
+      {loadingRecommendations ? (
+        <p>Loading recommendations...</p>
+      ) : (
+        <>
+          {referenceFavorite ? (
+            <h2>Because you liked {referenceFavorite.name}</h2>
+          ) : null}
+          {recommendations.length > 0 ? (
+            <RestaurantList restaurants={recommendations} />
+          ) : (
+            <p>No recommendations available.</p>
+          )}
+        </>
+>>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
       )}
     </div>
   );

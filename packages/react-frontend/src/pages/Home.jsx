@@ -22,11 +22,14 @@ const Home = () => {
   const fetchLocation = async () => {
     try {
       if (localStorage.getItem("authToken")) {
-        const res = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        const res = await fetch(
+          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/location",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
           },
-        });
+        );
         const data = await res.json();
         setCity((data.location || "slo").toLowerCase());
       } else {

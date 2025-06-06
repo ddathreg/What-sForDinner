@@ -26,11 +26,14 @@ const Profile = () => {
         return;
       }
 
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/details", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/details",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -48,14 +51,17 @@ const Profile = () => {
   const handleUpdateProfile = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch("https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/update",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(editedUser),
         },
-        body: JSON.stringify(editedUser),
-      });
+      );
 
       if (response.ok) {
         const updatedUser = await response.json();
