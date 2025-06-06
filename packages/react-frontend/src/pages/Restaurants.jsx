@@ -56,11 +56,7 @@ const Restaurants = () => {
       } else {
         // Use guest endpoint if not authenticated
         res = await fetch(
-<<<<<<< HEAD
-          "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/guest/filters",
-=======
           "https://whatsfordinner-cwdyeqbfaabyhgbr.westus-01.azurewebsites.net/users/guest/filters",
->>>>>>> cca4a3d5e501c4fa8119dc2ee83c1aa82de9cd85
         );
       }
       const data = await res.json();
