@@ -46,6 +46,8 @@ npm run lint - check for issues
 
 npm run format - format to prettier settings
 
+npx cypress open - run acceptance tests
+
 # Unit Test Coverage Report
 
 Ran 5/14 10:12 PM
